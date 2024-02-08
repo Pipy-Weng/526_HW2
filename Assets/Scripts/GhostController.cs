@@ -13,22 +13,17 @@ public class GhostController : MonoBehaviour
 
     void Update()
     {
+        // always find and highlight the nearest animal
+        FindAndHighlightAnimals();
+        
         HandlePossession();
     }
 
     void HandlePossession()
     {
-        if (Time.time >= lastPossessionTime + possessionCooldown && Input.GetKeyDown(KeyCode.Return))
+        if (Time.time >= lastPossessionTime + possessionCooldown && Input.GetKeyDown(KeyCode.Return) && currentTarget != null)
         {
-            Debug.Log("HandlePossession");
-            if (currentTarget == null)
-            {
-                FindAndHighlightAnimals();
-            }
-            else
-            {
-                PossessAnimal();
-            }
+            PossessAnimal();
         }
 
         if (currentTarget != null)
@@ -47,46 +42,76 @@ public class GhostController : MonoBehaviour
     
     void FindAndHighlightAnimals()
     {
-        Debug.Log("FindAndHighlightAnimals");
         Collider[] hits = Physics.OverlapSphere(transform.position, possessionRange);
-        nearbyAnimals.Clear();
+        GameObject nearestAnimal = null;
+        float nearestDistance = float.MaxValue;
 
         foreach (var hit in hits)
         {
             if (hit.CompareTag("Animals"))
             {
-                nearbyAnimals.Add(hit.gameObject);
-            
-                // only highlight the first animal
-                if (nearbyAnimals.Count == 1)
+                // update nearest
+                float distance = Vector3.Distance(transform.position, hit.transform.position);
+                if (distance < nearestDistance)
                 {
-                    currentTarget = hit.gameObject;
-                    SetHighlight(currentTarget, true);
+                    nearestDistance = distance;
+                    nearestAnimal = hit.gameObject;
                 }
             }
         }
         
-        // no animals are found or all animals are out of range
-        if (nearbyAnimals.Count == 0)
+        if (nearestAnimal != null && nearestAnimal != currentTarget)
         {
+            if (currentTarget != null)
+            {
+                // Unhighlight previous target if any
+                SetHighlight(currentTarget, false);
+            }
+            // Highlight the new nearest animal
+            currentTarget = nearestAnimal;
+            SetHighlight(currentTarget, true);
+        }
+        
+        // all animals are out of range
+        else if (nearestAnimal == null && currentTarget != null)
+        {
+            SetHighlight(currentTarget, false);
             currentTarget = null;
         }
     }
     
     void ChangeTarget(int distance)
     {
+        if (nearbyAnimals.Count == 0)
+        {
+            // exit if no animals
+            return;
+        }
+        
         int currentIndex = nearbyAnimals.IndexOf(currentTarget);
+        
+        // ensure currentIndex is valid
+        if (currentIndex < 0)
+        {
+            currentIndex = 0;
+        }
         
         // remove highlight from current target
         SetHighlight(currentTarget, false);
         
-        int targetIndex = currentIndex + distance;
-        if (targetIndex >= nearbyAnimals.Count) targetIndex = 0;
-        else if (targetIndex < 0) targetIndex = nearbyAnimals.Count - 1;
+        int targetIndex = (currentIndex + distance) % nearbyAnimals.Count;
+        if (targetIndex < 0) targetIndex += nearbyAnimals.Count;
         
         // change and highlight the new target
-        currentTarget = nearbyAnimals[targetIndex];
-        SetHighlight(currentTarget, true); 
+        if (targetIndex >= 0 && targetIndex < nearbyAnimals.Count)
+        {
+            currentTarget = nearbyAnimals[targetIndex];
+            SetHighlight(currentTarget, true);
+        }
+        else
+        {
+            Debug.LogError("Target index is out of bounds: " + targetIndex);
+        }
     }
     
     
@@ -123,7 +148,6 @@ public class GhostController : MonoBehaviour
     
     void PossessAnimal()
     {
-        Debug.Log("PossessAnimal");
         // initiate cooldown
         lastPossessionTime = Time.time;
         
