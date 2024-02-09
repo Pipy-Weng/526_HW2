@@ -24,7 +24,8 @@ public class Obstacles : MonoBehaviour
         {
             Debug.Log(collision.gameObject.tag);
             Destroy(collision.gameObject);
-            Destroy(gameObject);
+            // only destroy animal, not destroy obstacle
+            // Destroy(gameObject);
         }
     }
 
