@@ -22,14 +22,17 @@ public class ObstacleSpawner : MonoBehaviour
 
     void SpawnObstacles()
     {
-        float range = Random.Range(0,1);
+        float range = Random.Range(0f,1f);
+        // Debug.Log("range: "+range);
         GameObject obstacle;
-        if (range > 0.75)
+        if (range > 0.5f)
         {
             obstacle = obstacles[0]; //high obstacle
+            // Debug.Log("high obstacle");
         } else
         {
             obstacle = obstacles[1]; //low obstacle
+            // Debug.Log("low obstacle");
         }
             Vector3 spawnPos = new Vector3(0, -0.5f, 10);
             Instantiate(obstacle, spawnPos, obstacle.transform.rotation);
