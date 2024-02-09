@@ -10,25 +10,28 @@ public class GhostController : MonoBehaviour
     private List<GameObject> nearbyAnimals = new List<GameObject>();
     private float possessionCooldown = 5f;
     private float lastPossessionTime = -5f;
+    public GameObject animalPossessing;
+    private Vector3 startPos = new Vector3(0, 1.84f, 0);
+    public GameManager gameManager;
 
     void Update()
     {
+        // always find and highlight the nearest animal
+        FindAndHighlightAnimals();
         HandlePossession();
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            //Debug.Log("E pressed");
+            LeaveAnimal();
+        }
     }
 
     void HandlePossession()
     {
-        if (Time.time >= lastPossessionTime + possessionCooldown && Input.GetKeyDown(KeyCode.Return))
+        if (Time.time >= lastPossessionTime + possessionCooldown && Input.GetKeyDown(KeyCode.Return) && currentTarget != null)
         {
-            Debug.Log("HandlePossession");
-            if (currentTarget == null)
-            {
-                FindAndHighlightAnimals();
-            }
-            else
-            {
-                PossessAnimal();
-            }
+            PossessAnimal();
         }
 
         if (currentTarget != null)
@@ -44,58 +47,88 @@ public class GhostController : MonoBehaviour
         }
     }
 
-    
+
     void FindAndHighlightAnimals()
     {
-        Debug.Log("FindAndHighlightAnimals");
         Collider[] hits = Physics.OverlapSphere(transform.position, possessionRange);
-        nearbyAnimals.Clear();
+        GameObject nearestAnimal = null;
+        float nearestDistance = float.MaxValue;
 
         foreach (var hit in hits)
         {
             if (hit.CompareTag("Animals"))
             {
-                nearbyAnimals.Add(hit.gameObject);
-            
-                // only highlight the first animal
-                if (nearbyAnimals.Count == 1)
+                // update nearest
+                float distance = Vector3.Distance(transform.position, hit.transform.position);
+                if (distance < nearestDistance && distance != 0)
                 {
-                    currentTarget = hit.gameObject;
-                    SetHighlight(currentTarget, true);
+                    nearestDistance = distance;
+                    nearestAnimal = hit.gameObject;
                 }
             }
         }
-        
-        // no animals are found or all animals are out of range
-        if (nearbyAnimals.Count == 0)
+
+        if (nearestAnimal != null && nearestAnimal != currentTarget)
         {
+            if (currentTarget != null)
+            {
+                // Unhighlight previous target if any
+                SetHighlight(currentTarget, false);
+            }
+            // Highlight the new nearest animal
+            currentTarget = nearestAnimal;
+            SetHighlight(currentTarget, true);
+        }
+
+        // all animals are out of range
+        else if (nearestAnimal == null && currentTarget != null)
+        {
+            SetHighlight(currentTarget, false);
             currentTarget = null;
         }
     }
-    
+
     void ChangeTarget(int distance)
     {
+        if (nearbyAnimals.Count == 0)
+        {
+            // exit if no animals
+            return;
+        }
+
         int currentIndex = nearbyAnimals.IndexOf(currentTarget);
-        
+
+        // ensure currentIndex is valid
+        if (currentIndex < 0)
+        {
+            currentIndex = 0;
+        }
+
         // remove highlight from current target
         SetHighlight(currentTarget, false);
-        
-        int targetIndex = currentIndex + distance;
-        if (targetIndex >= nearbyAnimals.Count) targetIndex = 0;
-        else if (targetIndex < 0) targetIndex = nearbyAnimals.Count - 1;
-        
+
+        int targetIndex = (currentIndex + distance) % nearbyAnimals.Count;
+        if (targetIndex < 0) targetIndex += nearbyAnimals.Count;
+
         // change and highlight the new target
-        currentTarget = nearbyAnimals[targetIndex];
-        SetHighlight(currentTarget, true); 
+        if (targetIndex >= 0 && targetIndex < nearbyAnimals.Count)
+        {
+            currentTarget = nearbyAnimals[targetIndex];
+            SetHighlight(currentTarget, true);
+        }
+        else
+        {
+            Debug.LogError("Target index is out of bounds: " + targetIndex);
+        }
     }
-    
-    
+
+
     void SetHighlight(GameObject target, bool highlight)
     {
         // change the target's outline color to show highlight
         if (highlight)
         {
-            target.GetComponent<MeshRenderer>().material.color =Color.green;
+            target.GetComponent<MeshRenderer>().material.color = Color.green;
         }
         else
         {
@@ -116,33 +149,50 @@ public class GhostController : MonoBehaviour
                     target.GetComponent<MeshRenderer>().material = originalMaterial;
                 }
             }
-            
+
         }
     }
 
-    
+
     void PossessAnimal()
     {
-        Debug.Log("PossessAnimal");
         // initiate cooldown
         lastPossessionTime = Time.time;
-        
+
         // moving to the target position
         // TODO: the transformed position is not the same as the target ;(
         transform.position = currentTarget.transform.position;
-        
+
         // enabling animal control
+        animalPossessing = currentTarget;
         var animalControl = currentTarget.GetComponent<PlayerController>();
+
         if (animalControl != null)
         {
             animalControl.isPossessed = true;
-            
+
             // let ghost follow the animal
             this.transform.SetParent(currentTarget.transform);
+            gameManager.timeLeft += 10;
         }
-        
+
         // unhighlight and clear target
         SetHighlight(currentTarget, false);
         currentTarget = null;
+    }
+
+    void LeaveAnimal()
+    {
+        //Leave the enbodied animal
+        if (animalPossessing != null) {
+            Transform child = animalPossessing.transform.GetChild(0);
+            child.position = startPos;
+            Transform tmp = child.parent;
+            child.SetParent(null);
+            Destroy(tmp.gameObject);
+            animalPossessing = null;
+        }
+
+
     }
 }

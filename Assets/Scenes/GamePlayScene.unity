@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 42122068}
   - component: {fileID: 42122067}
   - component: {fileID: 42122071}
+  - component: {fileID: 42122072}
   m_Layer: 0
   m_Name: Ghost
   m_TagString: Untagged
@@ -242,7 +243,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 6e6271d77adea8d45b4b5f2c18dac094, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -250,6 +251,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &42122072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42122065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32a2b698987104227947f6b2100f093f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  possessionRange: 7.6
+  animalPossessing: {fileID: 0}
+  gameManager: {fileID: 1402362457}
 --- !u!1 &47498928
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,7 +416,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!20 &177492938
 Camera:
   m_ObjectHideFlags: 0
@@ -1025,7 +1041,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0.17364816, y: 0, z: 0, w: 0.9848078}
-  m_LocalPosition: {x: 0, y: 2, z: -4}
+  m_LocalPosition: {x: 0, y: 2.47, z: -1.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1120,7 +1136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!20 &1178038326
 Camera:
   m_ObjectHideFlags: 0
@@ -1472,12 +1488,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2eea000f95307e4395e63d655687565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeLeft: 10
+  timeLeft: 20
   totalScore: 0
   timeLeftText: {fileID: 1208223549}
   gameOverText: {fileID: 47498930}
   scoreText: {fileID: 849016955}
   gameOver: 0
+  ghostScript: {fileID: 42122072}
+  mainCamera: {fileID: 963194227}
+  pigCamera: {fileID: 1178038326}
+  birdCamera: {fileID: 177492938}
 --- !u!4 &1402362458
 Transform:
   m_ObjectHideFlags: 0
