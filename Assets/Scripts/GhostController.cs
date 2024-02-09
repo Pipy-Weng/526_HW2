@@ -8,11 +8,12 @@ public class GhostController : MonoBehaviour
     public float possessionRange = 3f;
     private GameObject currentTarget = null;
     private List<GameObject> nearbyAnimals = new List<GameObject>();
-    private float possessionCooldown = 5f;
+    public float possessionCooldown = 5f;
     private float lastPossessionTime = -5f;
     public GameObject animalPossessing;
     private Vector3 startPos = new Vector3(0, 1.84f, 0);
     public GameManager gameManager;
+    public bool isPossess = false;
 
     void Update()
     {
@@ -29,12 +30,12 @@ public class GhostController : MonoBehaviour
 
     void HandlePossession()
     {
-        if (Time.time >= lastPossessionTime + possessionCooldown && Input.GetKeyDown(KeyCode.Return) && currentTarget != null)
+        if (Time.time >= lastPossessionTime + possessionCooldown && Input.GetKeyDown(KeyCode.Return) && currentTarget != null && !isPossess)
         {
             PossessAnimal();
         }
 
-        if (currentTarget != null)
+        if (currentTarget)
         {
             if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.UpArrow))
             {
@@ -68,9 +69,9 @@ public class GhostController : MonoBehaviour
             }
         }
 
-        if (nearestAnimal != null && nearestAnimal != currentTarget)
+        if (nearestAnimal && nearestAnimal != currentTarget)
         {
-            if (currentTarget != null)
+            if (currentTarget)
             {
                 // Unhighlight previous target if any
                 SetHighlight(currentTarget, false);
@@ -81,7 +82,7 @@ public class GhostController : MonoBehaviour
         }
 
         // all animals are out of range
-        else if (nearestAnimal == null && currentTarget != null)
+        else if (nearestAnimal == null && currentTarget)
         {
             SetHighlight(currentTarget, false);
             currentTarget = null;
@@ -136,7 +137,7 @@ public class GhostController : MonoBehaviour
             if (target.name is "Pig(Clone)" or "Pig")
             {
                 Material originalMaterial = Resources.Load<Material>("Material/pig");
-                if (originalMaterial != null)
+                if (originalMaterial)
                 {
                     target.GetComponent<MeshRenderer>().material = originalMaterial;
                 }
@@ -144,7 +145,7 @@ public class GhostController : MonoBehaviour
             if (target.name is "Bird(Clone)" or "Bird")
             {
                 Material originalMaterial = Resources.Load<Material>("Material/Bird");
-                if (originalMaterial != null)
+                if (originalMaterial)
                 {
                     target.GetComponent<MeshRenderer>().material = originalMaterial;
                 }
@@ -158,33 +159,33 @@ public class GhostController : MonoBehaviour
     {
         // initiate cooldown
         lastPossessionTime = Time.time;
-
+        
         // moving to the target position
-        // TODO: the transformed position is not the same as the target ;(
         transform.position = currentTarget.transform.position;
-
+        
         // enabling animal control
         animalPossessing = currentTarget;
         var animalControl = currentTarget.GetComponent<PlayerController>();
-
-        if (animalControl != null)
+        
+        if (animalControl)
         {
             animalControl.isPossessed = true;
-
+            isPossess = true;
+        
             // let ghost follow the animal
             this.transform.SetParent(currentTarget.transform);
             gameManager.timeLeft += 10;
         }
-
+        
         // unhighlight and clear target
         SetHighlight(currentTarget, false);
         currentTarget = null;
     }
 
-    void LeaveAnimal()
+    public void LeaveAnimal()
     {
-        //Leave the enbodied animal
-        if (animalPossessing != null) {
+        //Leave the embodied animal
+        if (animalPossessing) {
             Transform child = animalPossessing.transform.GetChild(0);
             child.position = startPos;
             Transform tmp = child.parent;
@@ -193,6 +194,11 @@ public class GhostController : MonoBehaviour
             animalPossessing = null;
         }
 
+        isPossess = false;
+    }
 
+    public float GetLastPossessionTime()
+    {
+        return lastPossessionTime;
     }
 }
