@@ -11,16 +11,28 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI timeLeftText;
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI scoreText;
-    public bool gameOver = false; 
+    public bool gameOver = false;
+    private GameObject animalPossessing;
+    public GhostController ghostScript;
+    
+    public Camera mainCamera;
+    public Camera pigCamera;
+    public Camera birdCamera;
+    private Camera currentCamera;
+
+
+
+
     // Start is called before the first frame update
     void Start()
     {
+        currentCamera = mainCamera;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void FixedUpdate()
@@ -29,6 +41,7 @@ public class GameManager : MonoBehaviour
         {
             updateTimeLeft();
             updateScore();
+            updateCamera();
         }
     }
 
@@ -50,5 +63,42 @@ public class GameManager : MonoBehaviour
     private void updateScore()
     {
         scoreText.text = "Score: " + Mathf.Round(totalScore);
+    }
+
+    private void updateCamera()
+    {
+        if (ghostScript.animalPossessing != null) {
+            animalPossessing = ghostScript.animalPossessing;
+            // if the animalControlling is a pig, shift to pig camera
+            if (animalPossessing.name == "Pig" || animalPossessing.name == "Pig(Clone)") {
+                pigCamera.gameObject.SetActive(true);
+                mainCamera.gameObject.SetActive(false);
+                birdCamera.gameObject.SetActive(false);
+                currentCamera = pigCamera;
+                Vector3 currPos = animalPossessing.transform.position;
+                pigCamera.transform.position = new Vector3(currPos.x, currPos.y + 1, currPos.z - 2.5f);
+
+            } else if(animalPossessing.name == "Bird" || animalPossessing.name == "Bird(Clone)")
+            {
+                birdCamera.gameObject.SetActive(true);
+                mainCamera.gameObject.SetActive(false);
+                pigCamera.gameObject.SetActive(false);
+                currentCamera = birdCamera;
+                Vector3 currPos = animalPossessing.transform.position;
+                birdCamera.transform.position = new Vector3(birdCamera.transform.position.x, birdCamera.transform.position.y, animalPossessing.transform.position.z);
+            } 
+            //Debug.Log(animalPossessing.gameObject.name);
+        }
+        else //default
+        {
+            animalPossessing = null;
+            if (currentCamera != mainCamera)
+            {
+                mainCamera.gameObject.SetActive(true);
+                pigCamera.gameObject.SetActive(false);
+                birdCamera.gameObject.SetActive(false);
+                currentCamera = mainCamera;
+            }
+        }
     }
 }
