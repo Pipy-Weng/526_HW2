@@ -6,9 +6,12 @@ public class Obstacles : MonoBehaviour
 {
     // Start is called before the first frame update
     private RepeatGround groundScript;
+    public GameManager gameManager;
+    
     void Start()
     {
         groundScript = GameObject.Find("Ground").gameObject.GetComponent<RepeatGround>();
+        gameManager = GameManager.instance;
     }
 
     // Update is called once per frame
@@ -22,6 +25,11 @@ public class Obstacles : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Animals"))
         {
+            if (collision.gameObject.GetComponent<PlayerController>().isPossessed)
+            {
+                gameManager.GetComponent<GameManager>().GameOver();
+                Debug.Log("Hit obstacle, game over");
+            }
             Debug.Log(collision.gameObject.tag);
             Destroy(collision.gameObject);
             // only destroy animal, not destroy obstacle

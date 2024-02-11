@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviour
     public bool isPossessed;
     private bool isOnGround = true;
     private Rigidbody _rigid;
+    private GameManager gameManager;
+    public float possessionTimer = 0f;
+    private GameObject ghost;
     
     private void Awake()
     {
@@ -18,16 +21,18 @@ public class PlayerController : MonoBehaviour
         _rigid = gameObject.GetComponent<Rigidbody>();
         if (animalType == "Pig(Clone)")
         {
-            animalSpeed = 3;
+            animalSpeed = 3f;
         }
         if (animalType == "Bird(Clone)")
         {
-            animalSpeed = 2;
+            animalSpeed = 2f;
         }
+        
     }
     void Start()
     {
-
+        ghost = GameObject.Find("Ghost");
+        gameManager = GameManager.instance;
     }
 
     // Update is called once per frame
@@ -45,12 +50,25 @@ public class PlayerController : MonoBehaviour
         if (isPossessed && Input.GetKeyDown(KeyCode.E))
         {
             isPossessed = false;
-            if (_rigid.name == "Bird" || _rigid.name == "Bird(Clone)")
+            if (_rigid.name is "Bird" or "Bird(Clone)")
             {
                 _rigid.useGravity = false;
             }
         }
+        
+        // Birds always fly in the sky
+        if (gameObject.name is "Bird(Clone)" or "Bird")
+        {
+            if (transform.position.y < 2.3f)
+            {
+                var vector3 = transform.position;
+                vector3.y = 2.3f;
+                transform.position = vector3;
+            }
+        }
 
+
+        CheckEject();
 
     }
 
@@ -79,9 +97,33 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void CheckEject()
+    {
+        if (isPossessed)
+        {
+            possessionTimer += Time.deltaTime;
+            if (possessionTimer >= 8.0f)
+            {
+                ghost.GetComponent<GhostController>().LeaveAnimal();
+            }
+        }
+        else
+        {
+            possessionTimer = 0f;
+        }
+    }
+    
 
     private void OnCollisionEnter(Collision collision)
     {
-        isOnGround = true;
+        if (isPossessed && collision.gameObject.CompareTag("Animals"))
+        {
+            Debug.Log("Hit anther animal, game over");
+            gameManager.GetComponent<GameManager>().GameOver();
+        }
+        else
+        {
+            isOnGround = true;
+        }
     }
 }
