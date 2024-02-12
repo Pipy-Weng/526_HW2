@@ -29,7 +29,8 @@ public class AnimalSpawnManager : MonoBehaviour
 
         if(animal.name == "Bird")
         {
-            Vector3 spawnPos = new Vector3(Random.Range(-1.8f, 1.8f), 2.5f, -10);
+            // all birds are spawn in the same X-pos, cause birds' view in 2D, no X diff 
+            Vector3 spawnPos = new Vector3(0, 2.5f, -10);
             Instantiate(animal, spawnPos, animal.transform.rotation);
         }
     }

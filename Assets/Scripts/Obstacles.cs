@@ -17,7 +17,7 @@ public class Obstacles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.back * groundScript.speed * Time.deltaTime);
+        transform.Translate(Vector3.back * (groundScript.speed * Time.deltaTime));
         if (transform.position.z < -3) { Destroy(gameObject); }
     }
 
@@ -25,7 +25,7 @@ public class Obstacles : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Animals"))
         {
-            if (collision.gameObject.GetComponent<PlayerController>().isPossessed)
+            if (collision.gameObject.GetComponent<AnimalController>().isPossessed)
             {
                 gameManager.GetComponent<GameManager>().GameOver();
                 Debug.Log("Hit obstacle, game over");

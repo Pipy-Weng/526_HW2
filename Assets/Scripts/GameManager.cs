@@ -49,15 +49,15 @@ public class GameManager : MonoBehaviour
     {
         if (!gameOver)
         {
-            updateTimeLeft();
-            updateScore();
-            updateCamera();
-            updateCooldown();
-            updateEject();
+            UpdateTimeLeft();
+            UpdateScore();
+            UpdateCamera();
+            UpdateCooldown();
+            UpdateEject();
         }
     }
 
-    private void updateTimeLeft()
+    private void UpdateTimeLeft()
     {
         if (timeLeft > 0)
         {
@@ -71,12 +71,12 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void updateScore()
+    private void UpdateScore()
     {
         scoreText.text = "Score: " + Mathf.Round(totalScore);
     }
 
-    private void updateCooldown()
+    private void UpdateCooldown()
     {
         float remainCooldown = Mathf.Max(0, (ghostScript.GetLastPossessionTime() + 5.0f - Time.time));
         if (remainCooldown == 0)
@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    private void updateEject()
+    private void UpdateEject()
     {
         if (ghostScript.animalPossessing)
         {
@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void updateCamera()
+    private void UpdateCamera()
     {
         if (ghostScript.animalPossessing != null) {
             animalPossessing = ghostScript.animalPossessing;

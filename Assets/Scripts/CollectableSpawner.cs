@@ -23,18 +23,18 @@ public class CollectableSpawner : MonoBehaviour
     void SpawnCollectables()
     {
         int range = Random.Range(0, 2);
-        // Debug.Log("range: "+range);
         GameObject collectable;
         Vector3 spawnPos;
         int randomNum = Random.Range(1,4);
         for (int i = 0; i < randomNum; i++ ) { //randomly spawn 1-3 collectables
             if (range == 0) {
                 collectable = collectables[0]; // 0 is ground collectable
-                spawnPos = new Vector3(ghost.transform.position.x, 0, 10 + i * 2);
+                // avoid overlapping obstacles
+                spawnPos = new Vector3(ghost.transform.position.x, 0, 12 + i * 2);
             } else
             {
                 collectable = collectables[1]; // 1 is sky collectable
-                spawnPos = new Vector3(ghost.transform.position.x, 3 + i*0.5f, 10 + i * 2);
+                spawnPos = new Vector3(ghost.transform.position.x, 4 + i*0.5f, 10 + i * 2);
             }
             Instantiate(collectable, spawnPos, collectable.transform.rotation);
         }

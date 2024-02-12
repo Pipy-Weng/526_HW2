@@ -16,19 +16,19 @@ public class Collectables : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.back * groundScript.speed * Time.deltaTime);
-        if (transform.position.z < -3) { Destroy(gameObject); }
+        transform.Translate(Vector3.back * (groundScript.speed * Time.deltaTime));
+        if (transform.position.z < -6) { Destroy(gameObject); }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (gameObject.CompareTag("SkyCollectable") && other.transform.childCount != 0)
         {
-            gameManager.GetComponent<GameManager>().timeLeft += 3; // skycollectable increase the timeleft
+            gameManager.GetComponent<GameManager>().totalScore += 100; // sky collectable increase the score
         }
         if (gameObject.CompareTag("GroundCollectable") && other.transform.childCount != 0)
         {
-            gameManager.GetComponent<GameManager>().totalScore += 5; //ground collectable increase the total score
+            gameManager.GetComponent<GameManager>().timeLeft += 3; //ground collectable increase the time left
         }
         Destroy(gameObject);
     }

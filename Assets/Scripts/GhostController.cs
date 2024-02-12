@@ -34,18 +34,6 @@ public class GhostController : MonoBehaviour
         {
             PossessAnimal();
         }
-
-        if (currentTarget)
-        {
-            if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                ChangeTarget(1); // further target
-            }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                ChangeTarget(-1); // closer target
-            }
-        }
     }
 
 
@@ -88,42 +76,7 @@ public class GhostController : MonoBehaviour
             currentTarget = null;
         }
     }
-
-    void ChangeTarget(int distance)
-    {
-        if (nearbyAnimals.Count == 0)
-        {
-            // exit if no animals
-            return;
-        }
-
-        int currentIndex = nearbyAnimals.IndexOf(currentTarget);
-
-        // ensure currentIndex is valid
-        if (currentIndex < 0)
-        {
-            currentIndex = 0;
-        }
-
-        // remove highlight from current target
-        SetHighlight(currentTarget, false);
-
-        int targetIndex = (currentIndex + distance) % nearbyAnimals.Count;
-        if (targetIndex < 0) targetIndex += nearbyAnimals.Count;
-
-        // change and highlight the new target
-        if (targetIndex >= 0 && targetIndex < nearbyAnimals.Count)
-        {
-            currentTarget = nearbyAnimals[targetIndex];
-            SetHighlight(currentTarget, true);
-        }
-        else
-        {
-            Debug.LogError("Target index is out of bounds: " + targetIndex);
-        }
-    }
-
-
+    
     void SetHighlight(GameObject target, bool highlight)
     {
         // change the target's outline color to show highlight
@@ -165,7 +118,7 @@ public class GhostController : MonoBehaviour
         
         // enabling animal control
         animalPossessing = currentTarget;
-        var animalControl = currentTarget.GetComponent<PlayerController>();
+        var animalControl = currentTarget.GetComponent<AnimalController>();
         
         if (animalControl)
         {
