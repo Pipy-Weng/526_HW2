@@ -25,7 +25,7 @@ public class ObstacleSpawner : MonoBehaviour
         float range = Random.Range(0f,1f);
         // Debug.Log("range: "+range);
         GameObject obstacle;
-        if (range > 0.75f)
+        if (range > 0.8f)
         {
             obstacle = obstacles[0]; //high obstacle
             // Debug.Log("high obstacle");
@@ -34,7 +34,7 @@ public class ObstacleSpawner : MonoBehaviour
             obstacle = obstacles[1]; //low obstacle
             // Debug.Log("low obstacle");
         }
-            Vector3 spawnPos = new Vector3(0, -0.5f, 10);
-            Instantiate(obstacle, spawnPos, obstacle.transform.rotation);
+        Vector3 spawnPos = new Vector3(0, -0.5f, 10);
+        Instantiate(obstacle, spawnPos, obstacle.transform.rotation);
     }
 }

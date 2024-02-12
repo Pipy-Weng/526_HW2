@@ -7,9 +7,8 @@ public class AnimalController : MonoBehaviour
     // Start is called before the first frame update
     private float animalSpeed;
     private string animalType;
-    public float jumpForce = 5.0f;
+    public float jumpForce = 6.0f;
     public bool isPossessed;
-    private bool isOnGround = true;
     private Rigidbody _rigid;
     private GameManager gameManager;
     public float possessionTimer = 0f;
@@ -80,18 +79,16 @@ public class AnimalController : MonoBehaviour
         Debug.Log("jump");
         if (_rigid != null && isPossessed)
         {
-            // birds can always "flap" to jump, can only jump once
+            // birds can "flap" to jump
             if (animalType is "Bird(Clone)" or "Bird") 
             {
                 StartCoroutine(BirdJumpRoutine(6.0f, 2.3f, 0.7f));
-                isOnGround = false;
             }
             
-            // pigs only jump if on the ground and can only jump once
+            // pigs jump use gravity
             else if (animalType is "Pig(Clone)" or "Pig") 
             {
                 _rigid.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                isOnGround = false;
             }
         }
     }
@@ -155,10 +152,6 @@ public class AnimalController : MonoBehaviour
         {
             Debug.Log("Hit anther animal, game over");
             gameManager.GetComponent<GameManager>().GameOver();
-        }
-        else
-        {
-            isOnGround = true;
         }
     }
 }

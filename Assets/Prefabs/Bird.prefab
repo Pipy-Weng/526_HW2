@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 3236491755159473630}
   - component: {fileID: 8371498009178522762}
   - component: {fileID: 3228254423058715697}
-  - component: {fileID: 3312218819485954187}
   - component: {fileID: -5218861235708435708}
+  - component: {fileID: 9165311567493444403}
   m_Layer: 0
   m_Name: Bird
   m_TagString: Animals
@@ -107,20 +107,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3312218819485954187
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6706302007043315785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1044653c155bef04caaead68fb0095af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isPossessed: 0
-  possessionTimer: 0
 --- !u!54 &-5218861235708435708
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -148,3 +134,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &9165311567493444403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6706302007043315785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1044653c155bef04caaead68fb0095af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpForce: 7
+  isPossessed: 0
+  possessionTimer: 0

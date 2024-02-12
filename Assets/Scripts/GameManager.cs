@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI ejectText;
     public TextMeshProUGUI cooldownText;
+    public GameObject playAgainBtn;
     public bool gameOver = false;
     private GameObject animalPossessing;
     public GhostController ghostScript;
@@ -147,5 +149,11 @@ public class GameManager : MonoBehaviour
         Debug.Log("Game over");
         gameOver = true;
         gameOverText.gameObject.SetActive(true);
+        playAgainBtn.SetActive(true);
+    }
+    
+    public void PlayAgain()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
