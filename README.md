@@ -3,7 +3,7 @@ Here is our prototype, [Play](https://pipy-weng.github.io/526_HW2/) on GitHub Pa
 Goal: to Survive while gaining higher score!
 
 Player Control: 
-Press E to possess other objects
+Press Retuen to conform possess highlighted object.
 
 Player Control during possession:
 Press Space to Jump/Fly
@@ -15,7 +15,7 @@ The Game will end when:
 3. Running out of time
 
 Way to Survive:
-1. Possess other objects will increase the remaining time
+1. Possess objects will increase the remaining time
 2. Collectables on the ground will increase the remaining time
 
 Way to get high score:
